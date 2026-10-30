@@ -94,10 +94,26 @@ export async function POST(request) {
       booking.payment_link_id = link.id;
       await writeBooking(id, booking, PENDING_RECORD_SECONDS);
       return json({ booking_id: id, payment_url: link.short_url }, 201);
-    } catch {
+    } catch (error) {
+      const description = String(error?.message || "Unknown error")
+        .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted email]")
+        .replace(/\+?\d[\d\s().-]{7,}\d/g, "[redacted phone]")
+        .slice(0, 240);
+      const providerStatus = Number.isInteger(error?.status) ? error.status : null;
+      const providerCode = /^[A-Za-z0-9_.-]{1,80}$/.test(error?.code || "") ? error.code : null;
+      console.error("Booking payment setup failed", {
+        provider_status: providerStatus,
+        provider_code: providerCode,
+        description
+      });
       await releaseHold(date, time, id).catch(() => {});
       await redis("DEL", bookingKey(id)).catch(() => {});
-      return json({ error: "Could not start payment. Please check your Razorpay setup and try again." }, 502);
+      const message = providerStatus === 401 || providerStatus === 403
+        ? `Razorpay did not authorize the request (HTTP ${providerStatus}). Check that the Production Key ID and Key Secret are a matching Live pair, and that Payment Links are enabled.`
+        : providerStatus === 400
+          ? "Razorpay rejected the payment-link request. The Vercel function log contains its sanitized reason."
+          : "The payment service could not create a payment link. Please try again; the Vercel function log contains a sanitized diagnostic.";
+      return json({ error: message }, 502);
     }
   } catch (error) {
     const setupError = error.message?.startsWith("Server setup incomplete");
