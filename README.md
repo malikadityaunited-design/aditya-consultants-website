@@ -6,6 +6,7 @@ Static website plus Vercel Functions for appointment booking and Razorpay hosted
 
 - Weekdays only, Monday to Friday, in Asia/Kolkata time.
 - 45-minute session, with a 15-minute gap; start times are hourly from 09:00 through 20:00 IST.
+- When a customer selects the United Kingdom, the booking form displays each available slot in Europe/London local time (including GMT/BST); the submitted slot remains the corresponding IST appointment time.
 - INR 1,500 for India; GBP 50 for the United Kingdom.
 - The API holds a selected slot for up to 30 minutes and creates a Razorpay Payment Link that expires after 15 minutes.
 - A booking is confirmed only after a server-side payment-link check matches the booking reference, amount and currency. The signed payment_link.paid webhook is a second confirmation path.
