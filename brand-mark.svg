@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="Aditya Consultants mark">
+  <defs>
+    <linearGradient id="gold" x1="7" y1="7" x2="41" y2="41" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0D99D"/><stop offset="1" stop-color="#B99A5B"/>
+    </linearGradient>
+  </defs>
+  <circle class="orbit" cx="24" cy="24" r="21" stroke="url(#gold)" stroke-opacity=".8"/>
+  <path d="M13.5 34 24 12.5 34.5 34M17.3 26.5h13.4" stroke="url(#gold)" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
+  <path class="route" d="M7.2 30.5c5.1-5.7 9.3-7.8 14.1-7.8 6.5 0 9.6 5.9 15.4 5.9 1.7 0 3.1-.4 4.4-1.2" stroke="#E7D3A2" stroke-width=".85" stroke-linecap="round"/>
+  <circle class="spark" cx="41.1" cy="27.2" r="1.7" fill="#F0D99D"/>
+  <style>
+    .orbit{transform-origin:24px 24px;animation:turn 28s linear infinite}
+    .route{stroke-dasharray:2 2;animation:flow 7s linear infinite}
+    .spark{transform-origin:41.1px 27.2px;animation:glint 2.8s ease-in-out infinite alternate}
+    @keyframes turn{to{transform:rotate(360deg)}}
+    @keyframes flow{to{stroke-dashoffset:-16}}
+    @keyframes glint{from{opacity:.45;transform:scale(.78)}to{opacity:1;transform:scale(1.18)}}
+    @media(prefers-reduced-motion:reduce){.orbit,.route,.spark{animation:none}}
+  </style>
+</svg>
