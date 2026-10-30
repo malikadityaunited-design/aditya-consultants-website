@@ -37,10 +37,29 @@
     revealItems.forEach((item) => item.classList.add('is-visible'));
   }
 
+  const visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const localZoneName = new Intl.DateTimeFormat('en', {
+    timeZone: visitorTimeZone,
+    timeZoneName: 'long'
+  }).formatToParts(new Date()).find((part) => part.type === 'timeZoneName')?.value || visitorTimeZone;
+  const localLabel = document.querySelector('[data-local-label]');
+  const localZone = document.querySelector('[data-local-zone]');
+  const capitalCity = document.querySelector('[data-capital-city]');
+  const capitalCountry = document.querySelector('[data-capital-country]');
+  const isUkVisitor = visitorTimeZone === 'Europe/London';
+
+  if (localLabel) localLabel.textContent = 'Your local time';
+  if (localZone) localZone.textContent = localZoneName;
+  if (isUkVisitor) {
+    if (capitalCity) capitalCity.textContent = 'New Delhi';
+    if (capitalCountry) capitalCountry.textContent = 'India · capital';
+  }
+
   const clocks = document.querySelectorAll('[data-clock]');
   const updateClocks = () => clocks.forEach((clock) => {
+    const timeZone = clock.dataset.clock === 'local' ? visitorTimeZone : clock.dataset.clock;
     clock.textContent = new Intl.DateTimeFormat('en-GB', {
-      timeZone: clock.dataset.clock,
+      timeZone,
       hour: '2-digit',
       minute: '2-digit',
       hourCycle: 'h23'
