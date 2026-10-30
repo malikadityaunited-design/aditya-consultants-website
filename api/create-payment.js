@@ -43,6 +43,34 @@ export async function POST(request) {
     };
     try {
       await writeBooking(id, booking, PENDING_RECORD_SECONDS);
+      if (market === "United Kingdom") {
+        const order = await razorpay("/orders", {
+          method: "POST",
+          body: JSON.stringify({
+            amount: price.amount,
+            currency: price.currency,
+            receipt: id,
+            notes: { booking_id: id, date, time_ist: time, market }
+          })
+        });
+        if (!order.id || order.amount !== price.amount || order.currency !== price.currency) {
+          throw new Error("Razorpay did not return the expected order.");
+        }
+        booking.razorpay_order_id = order.id;
+        await writeBooking(id, booking, PENDING_RECORD_SECONDS);
+        return json({
+          booking_id: id,
+          checkout: true,
+          key_id: process.env.RAZORPAY_KEY_ID,
+          order_id: order.id,
+          amount: price.amount,
+          currency: price.currency,
+          name,
+          email,
+          phone
+        }, 201);
+      }
+
       const callback = new URL("/booking-result.html", process.env.SITE_URL);
       callback.searchParams.set("booking_id", id);
       const link = await razorpay("/payment_links", {

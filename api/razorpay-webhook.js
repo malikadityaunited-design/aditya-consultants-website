@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { json, readBooking, confirmPaidBooking, requireEnv } from "../lib/booking.js";
+import { json, readBooking, confirmPaidBooking, confirmPaidOrder, razorpay, requireEnv } from "../lib/booking.js";
 
 export async function POST(request) {
   try {
@@ -13,14 +13,27 @@ export async function POST(request) {
       return json({ error: "Invalid signature." }, 400);
     }
     const event = JSON.parse(raw.toString("utf8"));
-    if (event.event !== "payment_link.paid") return json({ received: true });
-    const link = event.payload?.payment_link?.entity;
-    const id = link?.reference_id;
-    if (!id) return json({ received: true });
-    const booking = await readBooking(id);
-    if (!booking || booking.payment_link_id !== link.id) return json({ received: true });
-    const result = await confirmPaidBooking(booking, link);
-    return json({ received: true, confirmed: result.confirmed, needs_attention: Boolean(result.needsAttention) });
+    if (event.event === "payment_link.paid") {
+      const link = event.payload?.payment_link?.entity;
+      const id = link?.reference_id;
+      if (!id) return json({ received: true });
+      const booking = await readBooking(id);
+      if (!booking || booking.payment_link_id !== link.id) return json({ received: true });
+      const result = await confirmPaidBooking(booking, link);
+      return json({ received: true, confirmed: result.confirmed, needs_attention: Boolean(result.needsAttention) });
+    }
+    if (event.event === "payment.captured") {
+      const payment = event.payload?.payment?.entity;
+      if (!payment?.order_id) return json({ received: true });
+      const order = await razorpay("/orders/" + encodeURIComponent(payment.order_id));
+      const id = order.notes?.booking_id;
+      if (!id) return json({ received: true });
+      const booking = await readBooking(id);
+      if (!booking || booking.razorpay_order_id !== order.id) return json({ received: true });
+      const result = await confirmPaidOrder(booking, payment);
+      return json({ received: true, confirmed: result.confirmed, needs_attention: Boolean(result.needsAttention) });
+    }
+    return json({ received: true });
   } catch {
     return json({ error: "Webhook could not be processed." }, 500);
   }

@@ -8,6 +8,7 @@ Static website plus Vercel Functions for appointment booking and Razorpay hosted
 - 45-minute session, with a 15-minute gap; start times are hourly from 09:00 through 20:00 IST.
 - When a customer selects the United Kingdom, the booking form displays each available slot in Europe/London local time (including GMT/BST); the submitted slot remains the corresponding IST appointment time.
 - INR 1,500 for India; GBP 50 for the United Kingdom.
+- India bookings use Razorpay Payment Links. UK bookings use Razorpay Standard Checkout, which can show PayPal when it is activated for the merchant and the currency is enabled on the linked PayPal account.
 - The API holds a selected slot for up to 30 minutes and creates a Razorpay Payment Link that expires after 15 minutes.
 - A booking is confirmed only after a server-side payment-link check matches the booking reference, amount and currency. The signed payment_link.paid webhook is a second confirmation path.
 - Vercel Functions coordinate reservations using Upstash Redis. Pending booking records expire after up to seven days; confirmed records are retained for 90 days after the appointment.
@@ -28,7 +29,11 @@ Create an Upstash Redis database and copy its REST URL and REST token. In Vercel
 - BOOKING_ADMIN_TOKEN (generate a long random value and keep it private)
 - SITE_URL (the exact HTTPS production domain assigned to this Vercel project)
 
-For testing, put test-mode Razorpay credentials in Vercel Preview variables. Create a webhook in Razorpay Test Mode with URL https://YOUR-DOMAIN/api/razorpay-webhook, subscribe to payment_link.paid, and set a separate webhook secret. Put that same webhook secret in Vercel Preview variables, then redeploy.
+The Razorpay Standard Checkout integration requires automatic payment capture to be enabled. In Razorpay Live Mode, edit the webhook at https://YOUR-DOMAIN/api/razorpay-webhook and subscribe to both `payment_link.paid` and `payment.captured`, retaining the current webhook secret. UK payments are confirmed only after the server verifies the Checkout signature and Razorpay reports a captured payment.
+
+PayPal is enabled from Razorpay Checkout after PayPal account linking and activation. Razorpay's documentation says PayPal defaults to USD; enable GBP in the linked PayPal account if UK customers should be charged in GBP. MoneySaver international bank transfers use a separate export account and local-currency account setup; they are not part of the site's automatic Razorpay Checkout flow. Activate the GBP account and confirm its payment-link/API workflow with Razorpay before offering bank transfer as a booking method.
+
+For testing, put test-mode Razorpay credentials in Vercel Preview variables. Create a webhook in Razorpay Test Mode with URL https://YOUR-DOMAIN/api/razorpay-webhook, subscribe to `payment_link.paid` and `payment.captured`, and set a separate webhook secret. Put that same webhook secret in Vercel Preview variables, then redeploy.
 
 Test a complete booking in Preview before accepting live payments. Check the customer confirmation page and /admin.html. After Razorpay approves international payments for this account, configure separate Production variables with live credentials and the corresponding live-mode webhook secret, then redeploy. GBP collection depends on Razorpay enabling international payments for this account. Never paste a key secret into site code, HTML, GitHub, or a customer-facing page.
 
