@@ -9,7 +9,7 @@ Static website plus Vercel Functions for appointment booking and Razorpay hosted
 - When a customer selects the United Kingdom, the booking form displays each available slot in Europe/London local time (including GMT/BST); the submitted slot remains the corresponding IST appointment time.
 - INR 1,500 for India; GBP 50 for the United Kingdom.
 - India bookings use Razorpay Payment Links. UK bookings use Razorpay Standard Checkout, which can show PayPal when it is activated for the merchant and the currency is enabled on the linked PayPal account.
-- The API holds a selected slot for up to 30 minutes and creates a Razorpay Payment Link that expires after 15 minutes.
+- The API holds a selected slot for up to 30 minutes and creates a Razorpay Payment Link that expires after 20 minutes.
 - A booking is confirmed only after a server-side payment-link check matches the booking reference, amount and currency. The signed payment_link.paid webhook is a second confirmation path.
 - Vercel Functions coordinate reservations using Upstash Redis. Pending booking records expire after up to seven days; confirmed records are retained for 90 days after the appointment.
 - Customers are redirected to Razorpay's hosted payment page. Card details never pass through this site.
