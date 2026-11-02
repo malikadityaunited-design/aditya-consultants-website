@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import {
   json, redis, requireEnv, slotKey, validSlot, bookingKey, writeBooking, releaseHold,
-  MARKET_PRICES, SLOT_HOLD_SECONDS, PENDING_RECORD_SECONDS, LINK_LIFETIME_SECONDS, razorpay
+  MARKET_PRICES, SLOT_HOLD_SECONDS, PENDING_RECORD_SECONDS, LINK_LIFETIME_SECONDS, razorpay, cashfree, cashfreeMode
 } from "../lib/booking.js";
 
 export async function POST(request) {
@@ -20,8 +20,9 @@ export async function POST(request) {
   if (!MARKET_PRICES[market] || !validSlot(date, time)) {
     return json({ error: "That weekday or time is no longer bookable. Please choose another slot." }, 400);
   }
+  if (market === "India" && !phone) return json({ error: "Enter a phone number for your Cashfree payment." }, 400);
   try {
-    requireEnv("RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET", "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "SITE_URL");
+    requireEnv("UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "SITE_URL");
     const forwarded = request.headers.get("x-forwarded-for")?.split(",").map((part) => part.trim()) || [];
     const ip = forwarded[forwarded.length - 1] || "unknown";
     const ipHash = crypto.createHash("sha256").update(ip).digest("hex").slice(0, 24);
@@ -43,7 +44,46 @@ export async function POST(request) {
     };
     try {
       await writeBooking(id, booking, PENDING_RECORD_SECONDS);
+      if (market === "India") {
+        requireEnv("CASHFREE_CLIENT_ID", "CASHFREE_CLIENT_SECRET");
+        const orderId = "ac_" + id.replaceAll("-", "");
+        const returnUrl = new URL("/booking-result.html", process.env.SITE_URL);
+        returnUrl.searchParams.set("booking_id", id);
+        const order = await cashfree("/orders", {
+          method: "POST",
+          headers: { "x-idempotency-key": id },
+          body: JSON.stringify({
+            order_id: orderId,
+            order_amount: price.amount / 100,
+            order_currency: "INR",
+            customer_details: {
+              customer_id: id.replaceAll("-", "").slice(0, 24),
+              customer_name: name,
+              customer_email: email,
+              ...(phone ? { customer_phone: phone } : {})
+            },
+            order_note: "Initial consultation booking",
+            order_expiry_time: new Date(Date.now() + 27 * 60 * 1000).toISOString(),
+            order_meta: { return_url: returnUrl.toString() },
+            order_tags: { booking_id: id, market: "India" }
+          })
+        });
+        if (order.order_id !== orderId || !order.payment_session_id
+          || Number(order.order_amount) !== price.amount / 100 || order.order_currency !== "INR") {
+          throw new Error("Cashfree did not return the expected order.");
+        }
+        booking.cashfree_order_id = order.order_id;
+        await writeBooking(id, booking, PENDING_RECORD_SECONDS);
+        return json({
+          booking_id: id,
+          checkout_provider: "cashfree",
+          payment_session_id: order.payment_session_id,
+          mode: cashfreeMode()
+        }, 201);
+      }
+
       if (market === "United Kingdom") {
+        requireEnv("RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET");
         const order = await razorpay("/orders", {
           method: "POST",
           body: JSON.stringify({
@@ -95,24 +135,20 @@ export async function POST(request) {
       await writeBooking(id, booking, PENDING_RECORD_SECONDS);
       return json({ booking_id: id, payment_url: link.short_url }, 201);
     } catch (error) {
-      const description = String(error?.message || "Unknown error")
-        .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted email]")
-        .replace(/\+?\d[\d\s().-]{7,}\d/g, "[redacted phone]")
-        .slice(0, 240);
       const providerStatus = Number.isInteger(error?.status) ? error.status : null;
       const providerCode = /^[A-Za-z0-9_.-]{1,80}$/.test(error?.code || "") ? error.code : null;
-      console.error("Booking payment setup failed", {
+      const provider = error?.provider === "cashfree" || market === "India" ? "Cashfree" : "Razorpay";
+      console.error(`${provider} booking payment setup failed`, {
         provider_status: providerStatus,
-        provider_code: providerCode,
-        description
+        provider_code: providerCode
       });
       await releaseHold(date, time, id).catch(() => {});
       await redis("DEL", bookingKey(id)).catch(() => {});
       const message = providerStatus === 401 || providerStatus === 403
-        ? `Razorpay did not authorize the request (HTTP ${providerStatus}). Check that the Production Key ID and Key Secret are a matching Live pair, and that Payment Links are enabled.`
+        ? `${provider} did not authorize the request (HTTP ${providerStatus}). Check that the API credentials match the selected environment.`
         : providerStatus === 400
-          ? "Razorpay rejected the payment-link request. The Vercel function log contains its sanitized reason."
-          : "The payment service could not create a payment link. Please try again; the Vercel function log contains a sanitized diagnostic.";
+          ? `${provider} rejected the payment request. Check the Vercel function log for its status and error code.`
+          : `The payment service could not prepare ${provider} checkout. Please try again.`;
       return json({ error: message }, 502);
     }
   } catch (error) {

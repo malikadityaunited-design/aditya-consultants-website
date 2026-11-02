@@ -1,4 +1,4 @@
-import { json, readBooking, razorpay, confirmPaidBooking, confirmPaidOrder, writeBooking, releaseHold, PENDING_RECORD_SECONDS, SLOT_HOLD_SECONDS } from "../lib/booking.js";
+import { json, readBooking, razorpay, cashfree, confirmPaidBooking, confirmPaidOrder, confirmPaidCashfreeBooking, writeBooking, releaseHold, PENDING_RECORD_SECONDS, SLOT_HOLD_SECONDS } from "../lib/booking.js";
 
 function details(booking) {
   return { status: "confirmed", date: booking.date, time: booking.time, timezone: booking.timezone, market: booking.market };
@@ -12,6 +12,32 @@ export async function GET(request) {
     if (!booking) return json({ status: "not_found" }, 404);
     if (booking.status === "confirmed" || booking.status === "payment_received_needs_attention") {
       return json({ status: booking.status, date: booking.date, time: booking.time, timezone: booking.timezone, market: booking.market });
+    }
+    if (booking.cashfree_order_id) {
+      const orderId = encodeURIComponent(booking.cashfree_order_id);
+      const order = await cashfree("/orders/" + orderId);
+      if (order.order_id !== booking.cashfree_order_id
+        || Number(order.order_amount) !== Number(booking.amount) / 100
+        || order.order_currency !== booking.currency) {
+        return json({ error: "Payment details did not match the booking." }, 409);
+      }
+      if (order.order_status === "PAID") {
+        const payments = await cashfree("/orders/" + orderId + "/payments");
+        const successful = Array.isArray(payments)
+          ? payments.find((payment) => payment.payment_status === "SUCCESS" && payment.order_id === orderId)
+          : null;
+        if (successful) {
+          const result = await confirmPaidCashfreeBooking(booking, successful);
+          if (result.confirmed) return json(details(result.booking));
+          if (result.needsAttention) return json({ status: "payment_received_needs_attention" });
+        }
+      }
+      if (order.order_status === "EXPIRED" || Date.now() > Date.parse(booking.created_at) + SLOT_HOLD_SECONDS * 1000) {
+        await releaseHold(booking.date, booking.time, id);
+        await writeBooking(id, { ...booking, status: "payment_expired" }, PENDING_RECORD_SECONDS);
+        return json({ status: "payment_expired" });
+      }
+      return json({ status: "pending" });
     }
     if (booking.payment_link_id) {
       const link = await razorpay("/payment_links/" + encodeURIComponent(booking.payment_link_id));
