@@ -1,6 +1,6 @@
 # ADITYA CONSULTANTS booking website
 
-Static website plus Vercel Functions for weekday consultation booking. Indian bookings (INR 1,500) use Cashfree Hosted Checkout; United Kingdom bookings (GBP 50) continue to use Razorpay Standard Checkout.
+Static website plus Vercel Functions for weekday consultation booking. Indian bookings (INR 3,000) use Cashfree Hosted Checkout; United Kingdom bookings (GBP 50) continue to use Razorpay Standard Checkout.
 
 ## Booking behavior
 
