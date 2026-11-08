@@ -485,31 +485,44 @@
     loadWeather();
     window.setInterval(loadWeather, 15 * 60 * 1000);
     const locationButton = document.querySelector('[data-weather-location]');
-    if (locationButton) {
-      locationButton.addEventListener('click', () => {
-        if (!navigator.geolocation) {
-          if (weatherSummary) weatherSummary.textContent = 'Location services are unavailable';
-          return;
-        }
+    const requestExactLocation = () => {
+      if (!navigator.geolocation) {
+        if (weatherSummary) weatherSummary.textContent = 'Location services are unavailable';
+        return;
+      }
+      if (locationButton) {
         locationButton.disabled = true;
         locationButton.textContent = 'Requesting location…';
-        navigator.geolocation.getCurrentPosition(({ coords }) => {
-          if (weatherPlace) weatherPlace.textContent = 'YOUR CURRENT LOCATION';
-          if (weatherSummary) weatherSummary.textContent = 'Updating the local sky…';
-          if (locationButton) {
-            locationButton.textContent = 'Using exact location';
-            locationButton.disabled = false;
-          }
-          loadWeather(coords, true);
-        }, () => {
-          if (weatherSummary) weatherSummary.textContent = 'Location not shared · showing nearby weather';
-          if (locationButton) {
-            locationButton.textContent = 'Try location again';
-            locationButton.disabled = false;
-          }
-        }, { enableHighAccuracy: true, maximumAge: 15 * 60 * 1000, timeout: 12_000 });
-      });
-    }
+      }
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        if (weatherPlace) weatherPlace.textContent = 'YOUR CURRENT LOCATION';
+        if (weatherSummary) weatherSummary.textContent = 'Updating the local sky…';
+        if (locationButton) {
+          locationButton.textContent = 'Using exact location';
+          locationButton.disabled = false;
+        }
+        loadWeather(coords, true);
+      }, () => {
+        if (weatherSummary) weatherSummary.textContent = 'Location not shared · showing nearby weather';
+        if (locationButton) {
+          locationButton.textContent = 'Try location again';
+          locationButton.disabled = false;
+        }
+      }, { enableHighAccuracy: true, maximumAge: 15 * 60 * 1000, timeout: 12_000 });
+    };
+    if (locationButton) locationButton.addEventListener('click', requestExactLocation);
+
+    // Ask for permission once on page load; if the visitor previously blocked it,
+    // leave the manual button available instead of repeatedly prompting.
+    const requestLocationOnLoad = async () => {
+      if (!navigator.geolocation) return;
+      try {
+        const permission = await navigator.permissions?.query({ name: 'geolocation' });
+        if (permission?.state === 'denied') return;
+      } catch { /* Some browsers do not expose the Permissions API. */ }
+      requestExactLocation();
+    };
+    requestLocationOnLoad();
   }
 
   const hero = document.querySelector('.home-hero');
