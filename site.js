@@ -86,7 +86,10 @@
           color=mix(color,vec3(1.0,0.78,0.39),clamp(routeDots+delhiPin,0.0,1.0));
           color=mix(color,vec3(0.68,0.86,1.0),clamp(londonPin,0.0,1.0));
           float alpha=u_opacity*limb;
-          gl_FragColor=vec4(color,alpha);
+          // The canvas context uses premultiplied alpha for page compositing.
+          // Multiply RGB by alpha so a hidden/transitioning globe stays truly
+          // transparent instead of bleeding over the landmark photographs.
+          gl_FragColor=vec4(color*alpha,alpha);
         }`);
       globeProgram = gl.createProgram();
       gl.attachShader(globeProgram, vertex);
