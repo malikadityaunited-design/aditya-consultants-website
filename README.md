@@ -42,6 +42,10 @@ The Razorpay Standard Checkout webhook remains `https://adityaconsultants.vercel
 - `UPSTASH_REDIS_REST_TOKEN`
 - `BOOKING_ADMIN_TOKEN` — a long random secret for `/admin.html`
 - `SITE_URL` — `https://adityaconsultants.vercel.app`
+- `RESEND_API_KEY` — Resend API key with permission to send booking emails
+- `BOOKING_EMAIL_FROM` — verified Resend sender, for example `ADITYA CONSULTANTS <bookings@your-verified-domain>`
+
+Booking emails are sent through Resend only after payment has been verified, or after an administrator successfully reschedules or cancels an appointment. The branded templates match the website’s charcoal, ivory, and gold palette and include the circular ADITYA mark. UK appointments show both UK local time and the IST equivalent. Configure a verified sending domain in Resend, then add the two email variables to Vercel Production and redeploy. Email delivery is idempotent so retried payment notifications do not create duplicate messages. The admin portal reports when an update email is not configured or could not be sent.
 
 After adding or changing Vercel variables, redeploy so the functions receive them. Verify test bookings in Preview before using production credentials. Do not make a real payment merely to test the live checkout.
 

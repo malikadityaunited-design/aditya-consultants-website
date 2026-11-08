@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { json, readBooking, confirmPaidBooking, confirmPaidOrder, razorpay, requireEnv } from "../lib/booking.js";
+import { sendBookingEmail } from "../lib/booking-email.js";
 
 export async function POST(request) {
   try {
@@ -20,6 +21,7 @@ export async function POST(request) {
       const booking = await readBooking(id);
       if (!booking || booking.payment_link_id !== link.id) return json({ received: true });
       const result = await confirmPaidBooking(booking, link);
+      if (result.confirmed) await sendBookingEmail(result.booking || booking, "confirmed");
       return json({ received: true, confirmed: result.confirmed, needs_attention: Boolean(result.needsAttention) });
     }
     if (event.event === "payment.captured") {
@@ -31,6 +33,7 @@ export async function POST(request) {
       const booking = await readBooking(id);
       if (!booking || booking.razorpay_order_id !== order.id) return json({ received: true });
       const result = await confirmPaidOrder(booking, payment);
+      if (result.confirmed) await sendBookingEmail(result.booking || booking, "confirmed");
       return json({ received: true, confirmed: result.confirmed, needs_attention: Boolean(result.needsAttention) });
     }
     return json({ received: true });

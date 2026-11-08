@@ -2,6 +2,7 @@ import {
   json, readBooking, cashfree, confirmPaidCashfreeBooking, requireEnv,
   verifyCashfreeWebhookSignature
 } from "../lib/booking.js";
+import { sendBookingEmail } from "../lib/booking-email.js";
 
 function bookingIdFromCashfreeOrder(orderId) {
   const match = /^ac_([0-9a-f]{32})$/i.exec(orderId || "");
@@ -37,6 +38,7 @@ export async function POST(request) {
       : null;
     if (!successful) return json({ received: true });
     const result = await confirmPaidCashfreeBooking(booking, successful);
+    if (result.confirmed) await sendBookingEmail(result.booking || booking, "confirmed");
     return json({ received: true, confirmed: result.confirmed, needs_attention: Boolean(result.needsAttention) });
   } catch {
     return json({ error: "Webhook could not be processed." }, 500);

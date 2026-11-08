@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { json, readBooking, razorpay, confirmPaidOrder, requireEnv } from "../lib/booking.js";
+import { sendBookingEmail } from "../lib/booking-email.js";
 
 export async function POST(request) {
   let body;
@@ -25,7 +26,10 @@ export async function POST(request) {
     const payment = await razorpay("/payments/" + encodeURIComponent(paymentId));
     if (payment.status !== "captured") return json({ status: "pending" });
     const result = await confirmPaidOrder(booking, payment);
-    if (result.confirmed) return json({ status: "confirmed" });
+    if (result.confirmed) {
+      const notification = await sendBookingEmail(result.booking || booking, "confirmed");
+      return json({ status: "confirmed", email_status: notification.status });
+    }
     if (result.needsAttention) return json({ status: "payment_received_needs_attention" });
     return json({ error: "Payment did not match the selected appointment." }, 409);
   } catch {

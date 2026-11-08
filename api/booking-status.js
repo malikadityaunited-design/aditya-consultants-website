@@ -1,7 +1,8 @@
 import { json, readBooking, razorpay, cashfree, confirmPaidBooking, confirmPaidOrder, confirmPaidCashfreeBooking, writeBooking, releaseHold, PENDING_RECORD_SECONDS, SLOT_HOLD_SECONDS } from "../lib/booking.js";
+import { sendBookingEmail } from "../lib/booking-email.js";
 
-function details(booking) {
-  return { status: "confirmed", date: booking.date, time: booking.time, timezone: booking.timezone, market: booking.market };
+function details(booking, emailStatus) {
+  return { status: "confirmed", date: booking.date, time: booking.time, timezone: booking.timezone, market: booking.market, email_status: emailStatus };
 }
 
 export async function GET(request) {
@@ -11,6 +12,10 @@ export async function GET(request) {
     const booking = await readBooking(id);
     if (!booking) return json({ status: "not_found" }, 404);
     if (booking.status === "confirmed" || booking.status === "payment_received_needs_attention") {
+      if (booking.status === "confirmed") {
+        const notification = await sendBookingEmail(booking, "confirmed");
+        return json(details(booking, notification.status));
+      }
       return json({ status: booking.status, date: booking.date, time: booking.time, timezone: booking.timezone, market: booking.market });
     }
     if (booking.cashfree_order_id) {
@@ -28,7 +33,10 @@ export async function GET(request) {
           : null;
         if (successful) {
           const result = await confirmPaidCashfreeBooking(booking, successful);
-          if (result.confirmed) return json(details(result.booking));
+          if (result.confirmed) {
+            const notification = await sendBookingEmail(result.booking || booking, "confirmed");
+            return json(details(result.booking || booking, notification.status));
+          }
           if (result.needsAttention) return json({ status: "payment_received_needs_attention" });
         }
       }
@@ -42,7 +50,10 @@ export async function GET(request) {
     if (booking.payment_link_id) {
       const link = await razorpay("/payment_links/" + encodeURIComponent(booking.payment_link_id));
       const result = await confirmPaidBooking(booking, link);
-      if (result.confirmed) return json(details(booking));
+      if (result.confirmed) {
+        const notification = await sendBookingEmail(result.booking || booking, "confirmed");
+        return json(details(result.booking || booking, notification.status));
+      }
       if (result.needsAttention) return json({ status: "payment_received_needs_attention" });
       if (link.status === "expired" || link.status === "cancelled") {
         await releaseHold(booking.date, booking.time, id);
@@ -58,7 +69,10 @@ export async function GET(request) {
       const captured = payments.find((payment) => payment.status === "captured");
       if (captured) {
         const result = await confirmPaidOrder(booking, captured);
-        if (result.confirmed) return json(details(booking));
+        if (result.confirmed) {
+          const notification = await sendBookingEmail(result.booking || booking, "confirmed");
+          return json(details(result.booking || booking, notification.status));
+        }
         if (result.needsAttention) return json({ status: "payment_received_needs_attention" });
       }
       if (Date.now() > Date.parse(booking.created_at) + SLOT_HOLD_SECONDS * 1000) {

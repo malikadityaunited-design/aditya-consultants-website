@@ -2,6 +2,7 @@ import {
   json, redis, requireEnv, constantTimeEqual, readBooking, slotKey, bookingKey,
   validSlot, utcForIst, FINAL_RECORD_SECONDS, tooManyAdminFailures
 } from "../lib/booking.js";
+import { sendBookingEmail } from "../lib/booking-email.js";
 
 function recordTtl(date, time) {
   const appointmentEnd = utcForIst(date, time) + 45 * 60000;
@@ -49,7 +50,8 @@ export async function POST(request) {
       ].join("\n");
       const result = Number(await redis("EVAL", script, "2", oldSlotKey, recordKey, id, booking.date, booking.time, JSON.stringify(cancelled), String(ttl)));
       if (result !== 1) return json({ error: "This booking changed while you were viewing it. Reload the list and try again." }, 409);
-      return json({ booking: cancelled });
+      const notification = await sendBookingEmail(cancelled, "cancelled");
+      return json({ booking: cancelled, notification });
     }
 
     if (body.action !== "reschedule") return json({ error: "Choose reschedule or cancel." }, 400);
@@ -83,7 +85,8 @@ export async function POST(request) {
     const result = Number(await redis("EVAL", script, "3", oldSlotKey, newSlotKey, recordKey, id, booking.date, booking.time, JSON.stringify(updated), String(ttl)));
     if (result === -3) return json({ error: "That time was just taken. Please choose another available time." }, 409);
     if (result !== 1) return json({ error: "This booking changed while you were viewing it. Reload the list and try again." }, 409);
-    return json({ booking: updated });
+    const notification = await sendBookingEmail(updated, "rescheduled", { date: booking.date, time: booking.time });
+    return json({ booking: updated, notification });
   } catch {
     return json({ error: "The booking change couldn’t be saved. Please try again." }, 503);
   }
