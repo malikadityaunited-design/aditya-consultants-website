@@ -14,8 +14,6 @@
   const globeContext = globeCanvas?.getContext('webgl', { alpha: true, antialias: true });
   const indiaGate = filmJourney?.querySelector('[data-india-gate]');
   const londonLandmark = filmJourney?.querySelector('[data-london-landmark]');
-  const gateCaption = filmJourney?.querySelector('[data-gate-caption]');
-  const bridgeCaption = filmJourney?.querySelector('[data-bridge-caption]');
   const delhiLabel = filmJourney?.querySelector('[data-city-delhi]');
   const londonLabel = filmJourney?.querySelector('[data-city-london]');
   const routeCaption = filmJourney?.querySelector('[data-route-caption]');
@@ -185,14 +183,12 @@
       indiaGate.style.clipPath = mobileSequence ? 'inset(0)' : `inset(0 ${landmarkWipe*100}% 0 0)`;
     }
     if (indiaGate) indiaGate.style.setProperty('--landmark-scale', String(1.1-.06*smooth(.12,.42,progressValue)));
-    if (towerBridge) {
+    if (londonLandmark) {
       const mobileBridgeOpacity = smooth(.25,.29,progressValue) * (1-smooth(.46,.50,progressValue));
-      towerBridge.style.setProperty('--landmark-opacity', String(mobileSequence ? mobileBridgeOpacity : londonIn));
-      towerBridge.style.clipPath = mobileSequence ? 'inset(0)' : `inset(0 0 0 ${(1-landmarkWipe)*100}%)`;
-      towerBridge.style.setProperty('--landmark-scale', String(1.13-.09*smooth(.43,.62,progressValue)));
+      londonLandmark.style.setProperty('--landmark-opacity', String(mobileSequence ? mobileBridgeOpacity : londonIn));
+      londonLandmark.style.clipPath = mobileSequence ? 'inset(0)' : `inset(0 0 0 ${(1-landmarkWipe)*100}%)`;
+      londonLandmark.style.setProperty('--landmark-scale', String(1.13-.09*smooth(.43,.62,progressValue)));
     }
-    if (gateCaption) gateCaption.style.opacity = String(1-landmarkWipe);
-    if (bridgeCaption) bridgeCaption.style.opacity = String(landmarkWipe*londonIn);
     if (delhiLabel) delhiLabel.style.opacity = String(routeReveal);
     if (londonLabel) londonLabel.style.opacity = String(routeReveal);
     if (routeCaption) routeCaption.style.opacity = String(routeReveal);
