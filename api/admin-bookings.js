@@ -1,11 +1,14 @@
-import { json, redis, constantTimeEqual, requireEnv } from "../lib/booking.js";
+import { json, redis, constantTimeEqual, requireEnv, tooManyAdminFailures } from "../lib/booking.js";
 
 export async function GET(request) {
   try {
     requireEnv("BOOKING_ADMIN_TOKEN", "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN");
     const auth = request.headers.get("authorization") || "";
     const supplied = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-    if (!constantTimeEqual(supplied, process.env.BOOKING_ADMIN_TOKEN)) return json({ error: "Not authorized." }, 401);
+    if (!constantTimeEqual(supplied, process.env.BOOKING_ADMIN_TOKEN)) {
+      const throttled = await tooManyAdminFailures(request);
+      return json({ error: throttled ? "Too many attempts. Try again in 15 minutes." : "Not authorized." }, throttled ? 429 : 401);
+    }
     let cursor = "0";
     const keys = [];
     do {
