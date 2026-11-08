@@ -137,8 +137,8 @@ html.js-ready .film-stage[data-scene="both"] .film-route{filter:drop-shadow(0 0 
 .film-page .markets-section{background:radial-gradient(ellipse at 80% 30%,rgba(66,89,112,.16),transparent 42%),#0b0e13}
 .film-page .market-grid{gap:16px;margin-top:52px}
 .film-page .market-card{min-height:clamp(360px,48vw,560px);padding:clamp(23px,3vw,38px);display:flex;flex-direction:column;justify-content:flex-end;border:1px solid rgba(255,255,255,.16);border-radius:4px;background-color:#141922;background-size:cover;background-position:center;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);transition:transform .8s var(--ease),background-position 1.2s var(--ease),border-color .5s}
-.film-page .market-card:nth-child(1){background-image:linear-gradient(180deg,rgba(6,8,12,.05) 10%,rgba(6,8,12,.36) 43%,rgba(6,8,12,.94) 100%),var(--india-gate-image,url("assets/film/india-gate-night.jpg"));background-position:center 44%}
-.film-page .market-card:nth-child(2){background-image:linear-gradient(180deg,rgba(6,8,12,.06) 10%,rgba(6,8,12,.4) 48%,rgba(6,8,12,.95) 100%),var(--tower-bridge-image,url("assets/film/tower-bridge-color.jpg"));background-position:center 48%}
+.film-page .market-card:nth-child(1){background-image:linear-gradient(180deg,rgba(6,8,12,.05) 10%,rgba(6,8,12,.36) 43%,rgba(6,8,12,.94) 100%),var(--india-gate-image,url("assets/film/india-gate-night.webp"));background-position:center 44%}
+.film-page .market-card:nth-child(2){background-image:linear-gradient(180deg,rgba(6,8,12,.06) 10%,rgba(6,8,12,.4) 48%,rgba(6,8,12,.95) 100%),var(--london-image,url("assets/film/london-night.jpg"));background-position:center 48%}
 .film-page .market-card:nth-child(3){background-image:linear-gradient(180deg,rgba(6,8,12,.2),rgba(6,8,12,.91)),url("assets/film/earth-map.jpg");background-position:center;background-color:#0c1621}
 .film-page .market-card:before{inset:0;z-index:0;height:auto;background:linear-gradient(180deg,transparent 48%,rgba(4,6,9,.54));opacity:.75}
 .film-page .market-card>*{position:relative;z-index:1}
@@ -167,7 +167,7 @@ html.js-ready .film-stage[data-scene="both"] .film-route{filter:drop-shadow(0 0 
 .film-page .price-card p{color:rgba(241,242,242,.64)}
 .film-page .policy-note{border:1px solid rgba(255,255,255,.18);border-left:3px solid #f0d99d;background:rgba(255,255,255,.085);color:rgba(255,255,255,.88)}
 .film-page .policy-note a{color:#f0d99d;text-decoration-color:rgba(240,217,157,.65);text-underline-offset:3px}
-.film-page .final-cta{min-height:80svh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(180deg,rgba(8,11,16,.48),rgba(8,11,16,.88)),var(--tower-bridge-image,url("assets/film/tower-bridge-color.jpg")) center 50%/cover}
+.film-page .final-cta{min-height:80svh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(180deg,rgba(8,11,16,.48),rgba(8,11,16,.88)),var(--london-image,url("assets/film/london-night.jpg")) center 50%/cover}
 .film-page footer{background:#080a0e;border-top:1px solid rgba(255,255,255,.08)}
 .film-page .image-credits{flex-basis:100%;max-width:1150px;color:rgba(255,255,255,.38);font-size:9px;line-height:1.8}
 .film-page .image-credits a{color:rgba(240,217,157,.72)}
@@ -176,7 +176,7 @@ html.js-ready .film-stage[data-scene="both"] .film-route{filter:drop-shadow(0 0 
 .film-globe{z-index:1;pointer-events:none;filter:drop-shadow(0 0 46px rgba(101,161,193,.24))}
 .film-landmark{left:50%;top:50%;z-index:0;width:100%;height:100%;max-width:none;opacity:var(--landmark-opacity,0);object-fit:cover;overflow:hidden;transform:translate(-50%,-50%) scale(var(--landmark-scale,1.04));filter:saturate(.88) contrast(1.06) brightness(.82);will-change:transform,opacity}
 .india-gate-art{object-position:center 42%}
-.tower-bridge-art{object-position:center 49%;filter:saturate(.92) contrast(1.04) brightness(.8)}
+.london-art{object-position:center 52%;filter:saturate(.92) contrast(1.04) brightness(.8)}
 .film-grain{z-index:3;opacity:.025}
 .film-coordinate,.film-world-caption{z-index:4}
 .coordinate-india{left:auto;right:clamp(32px,7vw,106px);bottom:12%}
@@ -213,6 +213,8 @@ html.js-ready .film-stage[data-scene="both"] .film-route{filter:drop-shadow(0 0 
   .film-globe{inset:0;width:100%;height:100%}
 }
 @media(max-width:640px){
+  .london-art[data-local-daylight="day"]{object-position:64% 52%}
+  .london-art[data-local-daylight="night"]{object-position:68% 60%}
   .film-page .home-hero{min-height:calc(100svh - 60px)}
   .film-page .market-grid{gap:12px}
   .film-page .market-card{min-height:360px;padding:25px}
@@ -430,7 +432,7 @@ body.film-page[data-daylight="day"] .price-card p{color:rgba(24,33,42,.68)}
 body.film-page[data-daylight="day"] .policy-note{border-color:rgba(24,33,42,.18);border-left-color:#9c7d45;background:rgba(255,255,255,.6);color:#25303a}
 body.film-page[data-daylight="day"] footer{background:#080a0e;border-color:rgba(255,255,255,.08);color:#c9ccd1}
 body.film-page[data-daylight="day"] footer p,body.film-page[data-daylight="day"] .footer-links a,body.film-page[data-daylight="day"] footer>a[href^="mailto:"],body.film-page[data-daylight="day"] footer .image-credits-link{color:rgba(255,255,255,.68)}
-body.film-page[data-daylight="day"] .final-cta{background-image:linear-gradient(180deg,rgba(222,230,231,.76),rgba(216,225,227,.92)),var(--tower-bridge-image,url("assets/film/tower-bridge-color.jpg"));color:#17212b}
+body.film-page[data-daylight="day"] .final-cta{background-image:linear-gradient(180deg,rgba(222,230,231,.76),rgba(216,225,227,.92)),var(--london-image,url("assets/film/london-night.jpg"));color:#17212b}
 body.film-page[data-daylight="day"] .final-cta p:not(.eyebrow){color:rgba(23,33,43,.76)}
 body.film-page[data-daylight="day"] .final-cta .eyebrow{color:#755d35}
 body.film-page[data-daylight="day"] .final-cta:before{background:radial-gradient(circle,rgba(255,255,255,.2),transparent 68%)}
@@ -455,7 +457,7 @@ body.film-page[data-daylight="day"] .film-pulse{stroke:#806338}
 body.film-page[data-daylight="day"] .film-grain{opacity:0}
 body.film-page[data-daylight="day"] .film-grain{opacity:0}
 body.film-page[data-daylight="day"] .film-landmark{filter:saturate(1.08) contrast(1.08) brightness(1)}
-body.film-page[data-daylight="day"] .film-landmark.tower-bridge-art{filter:saturate(1.08) contrast(1.08) brightness(1)}
+body.film-page[data-daylight="day"] .film-landmark.london-art{filter:saturate(1.08) contrast(1.08) brightness(1)}
 body.film-page[data-daylight="day"] .coordinate-india,body.film-page[data-daylight="day"] .coordinate-uk{color:#18212a}
 
 /* Interior pages follow the visitor's local day/night palette too; the brand banner stays as designed. */

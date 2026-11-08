@@ -13,7 +13,7 @@
   const globeCanvas = filmJourney?.querySelector('[data-film-globe]');
   const globeContext = globeCanvas?.getContext('webgl', { alpha: true, antialias: true });
   const indiaGate = filmJourney?.querySelector('[data-india-gate]');
-  const towerBridge = filmJourney?.querySelector('[data-tower-bridge]');
+  const londonLandmark = filmJourney?.querySelector('[data-london-landmark]');
   const gateCaption = filmJourney?.querySelector('[data-gate-caption]');
   const bridgeCaption = filmJourney?.querySelector('[data-bridge-caption]');
   const delhiLabel = filmJourney?.querySelector('[data-city-delhi]');
@@ -330,7 +330,7 @@
 
   const landmarkImages = [
     { element: document.querySelector('[data-india-gate]'), timeZone: 'Asia/Kolkata', latitude: 28.6129, longitude: 77.2295 },
-    { element: document.querySelector('[data-tower-bridge]'), timeZone: 'Europe/London', latitude: 51.4994, longitude: -0.1273 }
+    { element: document.querySelector('[data-london-landmark]'), timeZone: 'Europe/London', latitude: 51.4994, longitude: -0.1273 }
   ].filter((landmark) => landmark.element);
   const setLandmarkTime = (landmark, isDay) => {
     const image = landmark.element;
@@ -338,7 +338,7 @@
     const nextSource = image.dataset[`${mode}Src`];
     image.dataset.localDaylight = mode;
     if (nextSource) {
-      const imageToken = image.hasAttribute('data-india-gate') ? 'india-gate' : 'tower-bridge';
+      const imageToken = image.hasAttribute('data-india-gate') ? 'india-gate' : 'london';
       document.body.style.setProperty(`--${imageToken}-image`, `url("${nextSource}")`);
       if (image.getAttribute('src') !== nextSource) image.setAttribute('src', nextSource);
     }
