@@ -10,7 +10,7 @@
   <link rel="icon" href="brand-mark.svg" type="image/svg+xml">
   <script src="site.js" defer></script>
 </head>
-<body>
+<body class="film-page">
 <header>
   <a class="brand" href="index.html" aria-label="ADITYA CONSULTANTS home"><img class="brand-mark" src="brand-mark.svg" alt=""><b>ADITYA</b><small>CONSULTANTS</small></a>
   <nav aria-label="Main navigation">
@@ -20,6 +20,25 @@
 <main>
   <section class="home-hero" aria-labelledby="home-title">
     <div class="hero-grid" aria-hidden="true"></div>
+    <div class="weather-scene" aria-hidden="true">
+      <div class="weather-stars"></div>
+      <div class="weather-sun"></div>
+      <div class="weather-moon"></div>
+      <div class="weather-cloud cloud-one"></div>
+      <div class="weather-cloud cloud-two"></div>
+      <div class="weather-haze"></div>
+      <div class="weather-rain" data-weather-particles="rain"></div>
+      <div class="weather-snow" data-weather-particles="snow"></div>
+      <div class="weather-lightning"></div>
+    </div>
+    <div class="weather-readout" aria-live="polite">
+      <span data-weather-place>LOCAL SKY</span>
+      <strong data-weather-summary>Checking current weather…</strong>
+      <span class="weather-temperature" data-weather-temperature></span>
+      <button class="weather-location-button" type="button" data-weather-location>Use exact location</button>
+      <small>Your browser asks first. Location sets local weather and suggests a booking market.</small>
+      <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Weather data by Open-Meteo</a> · Animated from current conditions</small>
+    </div>
     <div class="hero-layout">
       <div class="hero-copy" data-reveal>
         <p class="eyebrow">BUSINESS ADVISORY · INDIA &amp; UNITED KINGDOM</p>
@@ -28,13 +47,70 @@
         <div class="hero-actions"><a class="button" href="booking.html">Book an initial consultation <span aria-hidden="true">↗</span></a><a class="button ghost" href="#approach">Explore our approach <span aria-hidden="true">↓</span></a></div>
       </div>
       <div class="hero-aside" aria-hidden="true">
-        <div class="orbit"><span class="orbit-dot"></span></div>
-        <div class="bridge-orb"><div class="bridge-wordmark"><b>IN <span class="bridge-arrow">↔</span> UK</b><span>ONE CONNECTED VIEW</span></div></div>
-        <div class="hero-location left"><strong data-local-label>Your local time</strong><span><span data-local-zone>Local timezone</span> · <time class="hero-time" data-clock="local">--:--</time></span></div>
-        <div class="hero-location right"><strong data-capital-city>London</strong><span><span data-capital-country>United Kingdom · UK capital</span> · <time class="hero-time" data-clock="Europe/London">--:--</time></span></div>
+        <div class="clock-atlas">
+          <div class="hello-cloud" aria-label="Hello in languages spoken across India and Europe">
+            <span class="hello hello-hi">नमस्ते</span>
+            <span class="hello hello-bn">নমস্কার</span>
+            <span class="hello hello-fr">Bonjour</span>
+            <span class="hello hello-es">Hola</span>
+            <span class="hello hello-it">Ciao</span>
+            <span class="hello hello-de">Hallo</span>
+          </div>
+          <div class="clock-unit clock-delhi">
+            <div class="clock-face" data-analog-clock="Asia/Kolkata"><i class="clock-hand clock-hour" data-clock-hand="hour"></i><i class="clock-hand clock-minute" data-clock-hand="minute"></i><i class="clock-hand clock-second" data-clock-hand="second"></i><b class="clock-pin"></b></div>
+            <div class="clock-caption"><strong>NEW DELHI</strong><span><i data-clock-offset="Asia/Kolkata">INDIA</i> · <time data-clock="Asia/Kolkata">--:--:--</time></span></div>
+          </div>
+          <div class="clock-unit clock-london">
+            <div class="clock-face" data-analog-clock="Europe/London"><i class="clock-hand clock-hour" data-clock-hand="hour"></i><i class="clock-hand clock-minute" data-clock-hand="minute"></i><i class="clock-hand clock-second" data-clock-hand="second"></i><b class="clock-pin"></b></div>
+            <div class="clock-caption"><strong>LONDON</strong><span><i data-clock-offset="Europe/London">UNITED KINGDOM</i> · <time data-clock="Europe/London">--:--:--</time></span></div>
+          </div>
+          <span class="atlas-caption">ONE MOMENT · MANY PERSPECTIVES</span>
+        </div>
       </div>
     </div>
     <div class="hero-bottom"><span>ADVISORY FOR WHAT’S NEXT</span><a href="#markets">Scroll to explore</a></div>
+  </section>
+
+  <section class="film-journey" id="journey" aria-label="Four visual moments linking two cities and everywhere between" data-film-journey>
+    <div class="film-stage" data-film-stage data-scene="india">
+      <div class="film-world" aria-hidden="true">
+        <img class="film-landmark india-gate-art" data-india-gate data-day-src="assets/film/india-gate-day.jpg" data-night-src="assets/film/india-gate-night.jpg" src="assets/film/india-gate-night.jpg" alt="India Gate illuminated in New Delhi" aria-hidden="true">
+        <img class="film-landmark tower-bridge-art" data-tower-bridge data-day-src="assets/film/tower-bridge-color.jpg" data-night-src="assets/film/tower-bridge-night.jpg" src="assets/film/tower-bridge-color.jpg" alt="Tower Bridge over the River Thames" aria-hidden="true">
+        <canvas class="film-globe" data-film-globe aria-hidden="true"></canvas>
+        <div class="film-grain"></div>
+        <span class="film-coordinate coordinate-india" data-gate-caption>INDIA GATE</span>
+        <span class="film-coordinate coordinate-uk" data-bridge-caption>TOWER BRIDGE</span>
+        <span class="film-world-caption" data-route-caption>ONE SHARED ROUTE</span>
+      </div>
+      <div class="film-copy">
+        <p class="eyebrow">A WIDER VIEW, ONE FRAME AT A TIME</p>
+        <div class="film-chapters" data-film-chapters>
+          <article class="film-chapter is-active" data-film-chapter aria-hidden="false">
+            <span class="film-kicker">01 <i>—</i> INDIA</span>
+            <h2>Whether it’s<br>Delhi…</h2>
+            <p>Every ambition starts somewhere. We meet you there, with a clear view of what comes next.</p>
+          </article>
+          <article class="film-chapter" data-film-chapter aria-hidden="true">
+            <span class="film-kicker">02 <i>—</i> THE JOURNEY</span>
+            <h2>…or London.</h2>
+            <p>From one city to another, the world turns and the distance comes into view.</p>
+          </article>
+          <article class="film-chapter" data-film-chapter aria-hidden="true">
+            <span class="film-kicker">03 <i>—</i> ANYWHERE IN BETWEEN</span>
+            <h2>Anywhere<br>in between.</h2>
+            <p>Pull back to see Delhi and London on one globe, connected by a shared route.</p>
+          </article>
+          <article class="film-chapter" data-film-chapter aria-hidden="true">
+            <span class="film-kicker">04 <i>—</i> ADITYA CONSULTANTS</span>
+            <h2>We bridge<br>the gap.</h2>
+            <p>Wherever you’re building, we help connect the questions, decisions and next steps.</p>
+          </article>
+        </div>
+        <div class="film-progress" aria-hidden="true"><span data-film-progress></span></div>
+        <p class="film-scroll-hint" aria-hidden="true">KEEP SCROLLING <span>↓</span></p>
+      </div>
+      <div class="film-side-note" aria-hidden="true"><span>ADITYA CONSULTANTS</span><span>INDIA · UNITED KINGDOM</span></div>
+    </div>
   </section>
 
   <section class="section markets-section" id="markets">
@@ -76,6 +152,18 @@
   <section class="section process-section">
     <div class="section-shell">
       <div class="section-heading" data-reveal><div><p class="eyebrow">A THOUGHTFUL FIRST STEP</p><h2>Start with a conversation.</h2></div><p class="section-intro">A focused first consultation is designed to help us understand your context and give you a clearer sense of possible next steps.</p></div>
+      <div class="conversation-visual" aria-hidden="true">
+        <svg viewBox="0 0 1000 230" preserveAspectRatio="none">
+          <defs><linearGradient id="conversationLine" x1="0" x2="1"><stop stop-color="#d6b775" stop-opacity=".15"/><stop offset=".5" stop-color="#f0d99d"/><stop offset="1" stop-color="#91b7d2" stop-opacity=".45"/></linearGradient></defs>
+          <path class="conversation-path" d="M40 150 C190 150 210 65 365 90 S620 173 760 112 S895 77 960 77"/>
+          <circle class="conversation-dot dot-one" cx="40" cy="150" r="6"/><circle class="conversation-dot dot-two" cx="500" cy="127" r="5"/><circle class="conversation-dot dot-three" cx="960" cy="77" r="6"/>
+          <circle class="conversation-ring" cx="40" cy="150" r="18"/><circle class="conversation-ring" cx="960" cy="77" r="18"/>
+        </svg>
+        <span class="conversation-label label-one">YOUR CONTEXT</span>
+        <span class="conversation-label label-two">45 MINUTES · ONE FOCUSED CONVERSATION</span>
+        <span class="conversation-label label-three">A CLEAR NEXT STEP</span>
+        <div class="conversation-core"><span>45</span><small>MIN</small></div>
+      </div>
       <div class="process-grid">
         <article class="process-step" data-reveal><span>01 / LISTEN</span><h3>Understand your context</h3><p>Share where you are now, what you are considering and what you want to achieve.</p></article>
         <article class="process-step" data-reveal style="--delay:100ms"><span>02 / CLARIFY</span><h3>Explore the key questions</h3><p>We’ll work through the priorities, challenges and options relevant to your situation.</p></article>
@@ -99,6 +187,6 @@
     <p class="eyebrow" data-reveal>ADITYA CONSULTANTS</p><h2 data-reveal>Make your next decision with a little more clarity.</h2><p data-reveal>Tell us what you’re working toward. We’ll start with the questions that matter to you.</p><a class="button" data-reveal href="booking.html">Book an initial consultation <span aria-hidden="true">↗</span></a>
   </section>
 </main>
-<footer><a class="brand light" href="index.html"><img class="brand-mark" src="brand-mark.svg" alt=""><b>ADITYA</b><small>CONSULTANTS</small></a><p>Supporting ambition in India and the United Kingdom.</p><div class="footer-links"><a href="consultation.html">Consultation &amp; fees</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds &amp; cancellations</a></div><a href="mailto:adityamalik@atomicmail.io">adityamalik@atomicmail.io</a><small>© 2026 ADITYA CONSULTANTS</small></footer>
+<footer><a class="brand light" href="index.html"><img class="brand-mark" src="brand-mark.svg" alt=""><b>ADITYA</b><small>CONSULTANTS</small></a><p>Supporting ambition in India and the United Kingdom.</p><div class="footer-links"><a href="consultation.html">Consultation &amp; fees</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds &amp; cancellations</a></div><a href="mailto:adityamalik@atomicmail.io">adityamalik@atomicmail.io</a><small>© 2026 ADITYA CONSULTANTS</small><a class="image-credits-link" href="image-credits.html">Image credits</a></footer>
 </body>
 </html>
