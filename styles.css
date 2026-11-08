@@ -488,6 +488,30 @@ body.film-page[data-daylight="day"] .process-section .section-heading h2{color:#
 body.film-page[data-daylight="day"] .bridge-section:after{opacity:.3;filter:grayscale(.15) contrast(1.18)}
 body.film-page[data-daylight="day"] .bridge-map{border-color:rgba(28,42,52,.2);background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(242,245,242,.5));box-shadow:0 22px 60px rgba(35,48,57,.12)}
 body.film-page[data-daylight="day"] .bridge-map .route{stroke:#927443;stroke-width:2.1;filter:drop-shadow(0 1px 1px rgba(40,50,58,.18))}
+
+/* Phone layout: keep the hero copy and clock artwork in the document flow. */
+@media(max-width:640px){
+  .hero-layout{grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+  .hero-aside{position:relative;inset:auto;width:100%;min-height:285px;margin:0;opacity:1;transform:none}
+  .clock-atlas{width:100%;max-width:360px;height:270px;margin:0 auto}
+  .hello-cloud{top:2%;left:0;right:0;min-height:42px;padding:0 4px;gap:4px 12px}
+  .hello-cloud .hello{font-size:12px}
+  .clock-delhi,.clock-london{top:25%;bottom:auto;width:min(37vw,140px)}
+  .clock-delhi{left:2%;right:auto}
+  .clock-london{left:auto;right:2%}
+  .clock-caption{white-space:normal;max-width:100%;line-height:1.35}
+  .clock-caption strong{font-size:8px;letter-spacing:.12em}
+  .clock-caption span{font-size:6px;letter-spacing:.02em}
+  .clock-delhi .clock-caption strong,.clock-london .clock-caption strong{font-size:8px}
+  .clock-delhi .clock-caption span,.clock-london .clock-caption span{font-size:6px}
+  .film-stage .film-landmark{transition:opacity .25s linear}
+}
+
+/* Keep a faint daytime lunar disc; its lit edge follows the current moon phase. */
+.weather-moon{overflow:hidden}
+.weather-moon:after{content:"";position:absolute;left:50%;top:50%;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 36% 35%,#6d7786 0 26%,#374351 62%,#202936 100%);box-shadow:inset -5px -3px 12px rgba(0,0,0,.28);transform:translate(calc(-50% + var(--moon-shadow-offset,0%)),-50%);transition:transform .8s ease}
+body[data-daylight="day"] .weather-moon{opacity:.38}
+body[data-daylight="day"] .weather-moon:after{background:radial-gradient(circle at 36% 35%,#88939f 0 26%,#52606d 62%,#34414e 100%)}
 body.film-page[data-daylight="day"] .bridge-map .glow{stroke:rgba(146,116,67,.2);stroke-width:22}
 body.film-page[data-daylight="day"] .bridge-map .node{fill:#84663a;filter:drop-shadow(0 0 7px rgba(132,102,58,.42))}
 body.film-page[data-daylight="day"] .conversation-visual{border-color:rgba(31,47,58,.22);background:linear-gradient(105deg,rgba(255,255,255,.62),rgba(226,233,231,.78),rgba(255,255,255,.62))}

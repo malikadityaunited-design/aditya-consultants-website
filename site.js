@@ -159,7 +159,10 @@
     const cx = (window.innerWidth <= 640 ? width * .5 : width * .64) * dpr;
     const cy = (height * (window.innerWidth <= 640 ? .36 : .5)) * dpr;
     const radius = Math.min(height * .57, width * (window.innerWidth <= 640 ? .49 : .40)) * zoom * dpr;
-    const opacity = smooth(.50,.58,progressValue);
+    const mobileSequence = window.innerWidth <= 640;
+    // On phones, hand off cleanly from India Gate to Tower Bridge, then to the
+    // globe. Keeping these visual beats separate avoids muddy image overlaps.
+    const opacity = mobileSequence ? smooth(.50,.56,progressValue) : smooth(.50,.58,progressValue);
     gl.uniform2f(globeUniforms.u_resolution, bufferWidth, bufferHeight);
     gl.uniform2f(globeUniforms.u_center, cx, bufferHeight-cy);
     gl.uniform1f(globeUniforms.u_radius, radius);
@@ -175,13 +178,14 @@
     const landmarkWipe = smooth(.22,.29,progressValue);
     const londonIn = 1-smooth(.48,.54,progressValue);
     if (indiaGate) {
-      indiaGate.style.setProperty('--landmark-opacity', '1');
-      indiaGate.style.clipPath = `inset(0 ${landmarkWipe*100}% 0 0)`;
+      indiaGate.style.setProperty('--landmark-opacity', mobileSequence ? String(1-smooth(.20,.24,progressValue)) : '1');
+      indiaGate.style.clipPath = mobileSequence ? 'inset(0)' : `inset(0 ${landmarkWipe*100}% 0 0)`;
     }
     if (indiaGate) indiaGate.style.setProperty('--landmark-scale', String(1.1-.06*smooth(.12,.42,progressValue)));
     if (towerBridge) {
-      towerBridge.style.setProperty('--landmark-opacity', String(londonIn));
-      towerBridge.style.clipPath = `inset(0 0 0 ${(1-landmarkWipe)*100}%)`;
+      const mobileBridgeOpacity = smooth(.25,.29,progressValue) * (1-smooth(.46,.50,progressValue));
+      towerBridge.style.setProperty('--landmark-opacity', String(mobileSequence ? mobileBridgeOpacity : londonIn));
+      towerBridge.style.clipPath = mobileSequence ? 'inset(0)' : `inset(0 0 0 ${(1-landmarkWipe)*100}%)`;
       towerBridge.style.setProperty('--landmark-scale', String(1.13-.09*smooth(.43,.62,progressValue)));
     }
     if (gateCaption) gateCaption.style.opacity = String(1-landmarkWipe);
@@ -406,6 +410,21 @@
           : { lat: 0, lon: 0, label: 'YOUR LOCAL REGION' };
     const area = weatherAreas[visitorTimeZone] || fallbackArea;
     if (weatherPlace) weatherPlace.textContent = area.label;
+
+    const moonReadout = document.querySelector('[data-moon-phase]');
+    const moonArtwork = weatherScene.querySelector('.weather-moon');
+    const updateMoonPhase = () => {
+      const cycleDays = 29.53058867;
+      const knownNewMoon = Date.UTC(2000, 0, 6, 18, 14);
+      const phase = ((Date.now() - knownNewMoon) / 86400000 % cycleDays + cycleDays) % cycleDays / cycleDays;
+      const illuminated = (1 - Math.cos(phase * Math.PI * 2)) / 2;
+      const phaseNames = ['New moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'];
+      const phaseName = phaseNames[Math.round(phase * 8) % 8];
+      if (moonReadout) moonReadout.textContent = `${phaseName} · ${Math.round(illuminated * 100)}% lit`;
+      if (moonArtwork) moonArtwork.style.setProperty('--moon-shadow-offset', `${(phase < .5 ? -1 : 1) * illuminated * 100}%`);
+    };
+    updateMoonPhase();
+    window.setInterval(updateMoonPhase, 60 * 60 * 1000);
 
     const conditionFor = (code) => {
       if (code === 0) return ['clear', 'Clear sky'];
