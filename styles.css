@@ -536,3 +536,14 @@ body.film-page[data-daylight="day"] .film-copy .film-chapter h2{color:#fff;text-
 body.film-page[data-daylight="day"] .film-copy .film-kicker,
 body.film-page[data-daylight="day"] .film-copy>.eyebrow{color:#f0d99d;text-shadow:0 1px 8px rgba(0,0,0,.98)}
 body.film-page[data-daylight="day"] .film-copy .film-chapter p{color:rgba(255,255,255,.94);text-shadow:0 1px 9px rgba(0,0,0,.98)}
+/* In the wide midpoint and closing scenes, copy sits on the clean sky beside the artwork. */
+body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy>.eyebrow,
+body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy>.eyebrow{color:#806338;text-shadow:none}
+body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy .film-chapter:nth-child(3) .film-kicker,
+body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy .film-chapter:nth-child(4) .film-kicker{color:#806338;text-shadow:none}
+body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy .film-chapter:nth-child(3) .film-kicker i,
+body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy .film-chapter:nth-child(4) .film-kicker i{color:#806338}
+body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy .film-chapter:nth-child(3) h2,
+body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy .film-chapter:nth-child(4) h2{color:#18212a;text-shadow:none}
+body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy .film-chapter:nth-child(3) p,
+body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy .film-chapter:nth-child(4) p{color:rgba(24,33,42,.82);text-shadow:none}
