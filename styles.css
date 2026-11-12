@@ -531,3 +531,8 @@ body.film-page[data-daylight="day"] .conversation-core{color:#14212a}
 body.film-page[data-daylight="day"] .conversation-core small{color:#735a31}
 
 .film-page .image-credits-link{color:rgba(240,217,157,.72);font-size:10px;text-underline-offset:3px}
+/* Day mode changes section headings to dark text; cinematic copy stays bright over photos. */
+body.film-page[data-daylight="day"] .film-copy .film-chapter h2{color:#fff;text-shadow:0 3px 20px rgba(0,0,0,.98),0 1px 3px #000}
+body.film-page[data-daylight="day"] .film-copy .film-kicker,
+body.film-page[data-daylight="day"] .film-copy>.eyebrow{color:#f0d99d;text-shadow:0 1px 8px rgba(0,0,0,.98)}
+body.film-page[data-daylight="day"] .film-copy .film-chapter p{color:rgba(255,255,255,.94);text-shadow:0 1px 9px rgba(0,0,0,.98)}
