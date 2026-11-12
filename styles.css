@@ -547,3 +547,8 @@ body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy
 body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy .film-chapter:nth-child(4) h2{color:#18212a;text-shadow:none}
 body.film-page[data-daylight="day"] .film-stage[data-scene="between"] .film-copy .film-chapter:nth-child(3) p,
 body.film-page[data-daylight="day"] .film-stage[data-scene="bridge"] .film-copy .film-chapter:nth-child(4) p{color:rgba(24,33,42,.82);text-shadow:none}
+/* A soft paper wash keeps the closing London image visible without competing with its call to action. */
+body.film-page[data-daylight] .final-cta{color:#18212a}
+body.film-page[data-daylight] .final-cta:before{inset:0;width:auto;aspect-ratio:auto;border-radius:0;background:rgba(244,247,246,.8);transform:none}
+body.film-page[data-daylight] .final-cta .eyebrow{color:#806338}
+body.film-page[data-daylight] .final-cta p:not(.eyebrow){color:rgba(24,33,42,.82)}
