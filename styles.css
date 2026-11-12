@@ -382,7 +382,7 @@ body[data-weather="fog"] .weather-scene{filter:saturate(.45) brightness(1.18)}
 
 /* Daylight shifts the whole homepage to a warm, clear palette; night keeps the film's deep tones. */
 body[data-daylight="day"] .home-hero{background:#e8edf0;color:#17202a}
-body[data-daylight="day"] .home-hero:after{background:linear-gradient(90deg,rgba(236,240,240,.96) 0%,rgba(236,240,240,.77) 38%,rgba(236,240,240,.1) 76%,rgba(236,240,240,.02) 100%),linear-gradient(0deg,rgba(231,237,238,.25),transparent 48%)}
+body[data-daylight="day"] .home-hero:after{background:none}
 body.film-page[data-daylight="day"] .home-hero:before{opacity:.52;filter:saturate(.9) contrast(1.12)}
 body[data-daylight="day"] .home-hero .eyebrow{color:#806338}
 body[data-daylight="day"] .home-hero h1 span{color:#9b7840}
@@ -431,14 +431,14 @@ body.film-page[data-daylight="day"] .price-card p{color:rgba(24,33,42,.68)}
 body.film-page[data-daylight="day"] .policy-note{border-color:rgba(24,33,42,.18);border-left-color:#9c7d45;background:rgba(255,255,255,.6);color:#25303a}
 body.film-page[data-daylight="day"] footer{background:#080a0e;border-color:rgba(255,255,255,.08);color:#c9ccd1}
 body.film-page[data-daylight="day"] footer p,body.film-page[data-daylight="day"] .footer-links a,body.film-page[data-daylight="day"] footer>a[href^="mailto:"],body.film-page[data-daylight="day"] footer .image-credits-link{color:rgba(255,255,255,.68)}
-body.film-page[data-daylight="day"] .final-cta{background-image:linear-gradient(180deg,rgba(222,230,231,.76),rgba(216,225,227,.92)),var(--london-image,url("assets/film/london-night.jpg"));color:#17212b}
-body.film-page[data-daylight="day"] .final-cta p:not(.eyebrow){color:rgba(23,33,43,.76)}
-body.film-page[data-daylight="day"] .final-cta .eyebrow{color:#755d35}
-body.film-page[data-daylight="day"] .final-cta:before{background:radial-gradient(circle,rgba(255,255,255,.2),transparent 68%)}
+body.film-page[data-daylight="day"] .final-cta{background-image:linear-gradient(180deg,rgba(8,11,16,.38),rgba(8,11,16,.88)),var(--london-image,url("assets/film/london-night.jpg"));color:#fff}
+body.film-page[data-daylight="day"] .final-cta p:not(.eyebrow){color:rgba(241,242,242,.82)}
+body.film-page[data-daylight="day"] .final-cta .eyebrow{color:#f0d99d}
+body.film-page[data-daylight="day"] .final-cta:before{background:none}
 body.film-page[data-daylight="day"] .film-stage{background:#e7ecea}
 body.film-page[data-daylight="day"] .film-world{background:radial-gradient(ellipse at 65% 44%,rgba(141,174,189,.2),transparent 66%),#dfe7e8}
-body.film-page[data-daylight="day"] .film-world:after{background:linear-gradient(90deg,rgba(237,241,239,.12),rgba(237,241,239,.05) 42%,transparent 74%),linear-gradient(0deg,rgba(237,241,239,.03),transparent 44%,rgba(237,241,239,.02))}
-body.film-page[data-daylight="day"] .film-copy:before{inset:-8% -22% -8% -12%;background:linear-gradient(90deg,rgba(238,241,238,.88),rgba(238,241,238,.72) 58%,rgba(238,241,238,.18) 84%,transparent);filter:blur(8px)}
+body.film-page[data-daylight="day"] .film-world:after{background:none}
+body.film-page[data-daylight="day"] .film-copy:before{background:none}
 body.film-page[data-daylight="day"] .film-copy>.eyebrow{color:#806338}
 body.film-page[data-daylight="day"] .film-kicker{color:#766444}
 body.film-page[data-daylight="day"] .film-chapter h2{color:#18212a}
