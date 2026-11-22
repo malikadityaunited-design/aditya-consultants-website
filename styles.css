@@ -615,3 +615,10 @@ body.about-page[data-daylight="night"] .about-started{border-color:rgba(255,255,
 
 /* Interior-page cards keep their ink text on pale surfaces in both time themes. */
 .cards article{color:#18212a}
+
+@media(max-width:640px){
+  .brand{display:grid;grid-template-columns:30px auto;grid-template-rows:14px 9px;column-gap:8px;row-gap:0;align-content:center}
+  .brand-mark{grid-column:1;grid-row:1/3;align-self:center}
+  .brand b{grid-column:2;grid-row:1;align-self:end;line-height:1.05}
+  .brand small{display:block;grid-column:2;grid-row:2;align-self:start;margin:0;font-size:5px;line-height:1.1;letter-spacing:.2em;opacity:.72}
+}
