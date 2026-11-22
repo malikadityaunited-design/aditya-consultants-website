@@ -1,13 +1,13 @@
 # ADITYA CONSULTANTS booking website
 
-Static website plus Vercel Functions for weekday consultation booking. Indian bookings (INR 3,000) use Cashfree Hosted Checkout; United Kingdom bookings (GBP 50) continue to use Razorpay Standard Checkout.
+Static website plus Vercel Functions for weekday consultation booking. India bookings (INR 3,000) are temporarily paused. The existing Cashfree integration remains in place for reactivation; United Kingdom bookings (GBP 50) continue to use Razorpay Standard Checkout.
 
 ## Booking behavior
 
 - Monday to Friday, 09:00–21:00 India Standard Time; 45-minute consultations with 15-minute gaps.
 - UK customers see appointment times in Europe/London local time (GMT/BST); stored appointments remain in IST.
 - The server fixes the price and reserves each slot in Upstash Redis for up to 30 minutes.
-- India checkout orders are created server-side in Cashfree. The customer’s browser receives only a payment session ID, then opens Cashfree’s hosted checkout.
+- India checkout is currently disabled in the public booking flow and server endpoint. Its Cashfree integration is retained for reactivation. When enabled, orders are created server-side in Cashfree. The customer’s browser receives only a payment session ID, then opens Cashfree’s hosted checkout.
 - UK checkout remains with Razorpay. Provider credentials never enter browser code or the Git repository.
 - The booking-result endpoint confirms Cashfree payments by querying Cashfree’s order and payment APIs. A signed Cashfree webhook also verifies successful payments when the customer does not return to the site. Razorpay’s existing webhook and verification flow remains in place for UK bookings.
 - Pending booking records expire after up to seven days; confirmed records are retained until 90 days after the appointment.

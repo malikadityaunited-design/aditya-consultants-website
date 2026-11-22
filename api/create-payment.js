@@ -14,6 +14,8 @@ export async function POST(request) {
   const date = body.date;
   const time = body.time;
   const market = body.market;
+  // Keep the domestic Cashfree integration intact while India bookings are paused.
+  if (market === "India") return json({ error: "India bookings are temporarily unavailable. Please choose the United Kingdom market or contact us for assistance." }, 503);
   if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return json({ error: "Enter your name and a valid email address." }, 400);
   }
