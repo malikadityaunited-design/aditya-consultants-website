@@ -622,3 +622,13 @@ body.about-page[data-daylight="night"] .about-started{border-color:rgba(255,255,
   .brand b{grid-column:2;grid-row:1;align-self:end;line-height:1.05}
   .brand small{display:block;grid-column:2;grid-row:2;align-self:start;margin:0;font-size:5px;line-height:1.1;letter-spacing:.2em;opacity:.72}
 }
+
+@media(max-width:640px){
+  .film-page .hero-layout{width:100%;flex:0 0 100%}
+}
+@media(max-width:480px){
+  .film-page header nav{max-width:none;overflow:visible;gap:12px}
+  .film-page header nav a:not(.button):not([href="consultation.html"]){display:none}
+  .film-page header nav a{flex:none}
+  .film-page header nav .button.small{max-width:none}
+}
