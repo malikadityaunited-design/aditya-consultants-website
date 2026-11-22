@@ -1,40 +1,27 @@
 # ADITYA CONSULTANTS booking website
 
-Static website plus Vercel Functions for weekday consultation booking. India bookings (INR 3,000) are temporarily paused. The existing Cashfree integration remains in place for reactivation; United Kingdom bookings (GBP 50) continue to use Razorpay Standard Checkout.
+Static website plus Vercel Functions for weekday consultation booking. India consultations cost INR 3,000 and UK consultations cost GBP 50. Both markets use Razorpay Standard Checkout.
 
 ## Booking behavior
 
 - Monday to Friday, 09:00–21:00 India Standard Time; 45-minute consultations with 15-minute gaps.
 - UK customers see appointment times in Europe/London local time (GMT/BST); stored appointments remain in IST.
 - The server fixes the price and reserves each slot in Upstash Redis for up to 30 minutes.
-- India checkout is currently disabled in the public booking flow and server endpoint. Its Cashfree integration is retained for reactivation. When enabled, orders are created server-side in Cashfree. The customer’s browser receives only a payment session ID, then opens Cashfree’s hosted checkout.
-- UK checkout remains with Razorpay. Provider credentials never enter browser code or the Git repository.
-- The booking-result endpoint confirms Cashfree payments by querying Cashfree’s order and payment APIs. A signed Cashfree webhook also verifies successful payments when the customer does not return to the site. Razorpay’s existing webhook and verification flow remains in place for UK bookings.
+- The server fixes the price, reserves each slot in Upstash Redis for up to 30 minutes, and creates a Razorpay order in the selected market currency. The browser opens Razorpay Checkout with the order ID. Provider credentials never enter browser code or the Git repository.
+- The verify-payment endpoint checks Razorpay’s payment signature before confirming a booking. The booking-result endpoint and signed Razorpay webhook can also confirm successful payments when the customer does not return to the site. Legacy Cashfree webhook and status handling remain for old transactions; new bookings use Razorpay.
 - Pending booking records expire after up to seven days; confirmed records are retained until 90 days after the appointment.
 - Customers are sent to provider-hosted payment pages. Card details are not collected or stored by this site.
 - Booking records can be reviewed at `/admin.html`; there is no automatic email notification to the business.
 
-## Cashfree configuration
+## Razorpay configuration
 
-Do not put the supplied `APIKey.csv`, its values, or any real credentials in GitHub or website files. In Vercel Project Settings → Environment Variables, add:
-
-- `CASHFREE_CLIENT_ID` — first credential in the CSV
-- `CASHFREE_CLIENT_SECRET` — second credential in the CSV
-- `CASHFREE_ENVIRONMENT` — `sandbox` for Preview/testing or `production` for real payments
-
-Use Cashfree sandbox credentials in Vercel Preview and production credentials in Vercel Production. Keep the environment-specific credentials paired with the matching environment value. The application defaults to `sandbox` when `CASHFREE_ENVIRONMENT` is absent.
-
-Before accepting payments, whitelist `adityaconsultants.vercel.app` in Cashfree’s domain settings. Configure a Cashfree payment-success webhook at `https://adityaconsultants.vercel.app/api/cashfree-webhook`. The webhook signature is verified with the Cashfree client secret; no additional webhook secret is required. The Cashfree API does not accept payment-card data from this website.
-
-## Razorpay configuration for UK bookings
-
-Keep these existing Vercel variables for UK payments:
+Both INR and GBP bookings use the existing Razorpay credentials:
 
 - `RAZORPAY_KEY_ID`
 - `RAZORPAY_KEY_SECRET`
 - `RAZORPAY_WEBHOOK_SECRET`
 
-The Razorpay Standard Checkout webhook remains `https://adityaconsultants.vercel.app/api/razorpay-webhook`, subscribed to `payment.captured`. PayPal remains available only if it is enabled and configured for GBP on the merchant account.
+The Razorpay Standard Checkout webhook URL is `https://adityaconsultants.vercel.app/api/razorpay-webhook`, subscribed to `payment.captured` and `order.paid`. INR checkout also depends on domestic payments being enabled for the merchant account. PayPal availability depends on its configuration in the Razorpay merchant account.
 
 ## Shared Vercel variables
 
