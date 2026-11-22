@@ -633,3 +633,4 @@ body.about-page[data-daylight="night"] .about-started{border-color:rgba(255,255,
   .film-page header nav .button.small{max-width:none}
 }
 @media(max-width:640px){.film-page .hero-copy{padding-top:42px}}
+@media(max-width:640px){.film-page .hero-copy{padding-top:72px}}
